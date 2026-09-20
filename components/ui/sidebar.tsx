@@ -4,9 +4,9 @@ import * as React from "react"
 import { mergeProps } from "@base-ui/react/merge-props"
 import { useRender } from "@base-ui/react/use-render"
 import { cva, type VariantProps } from "class-variance-authority"
-import { cn } from "cn"
 
 import { useIsMobile } from "@/hooks/use-mobile"
+import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Separator } from "@/components/ui/separator"
@@ -180,6 +180,62 @@ function Sidebar({
   }
 
   if (isMobile) {
+    if (collapsible === "icon") {
+      return (
+        <>
+          <div
+            className="group flex text-sidebar-foreground"
+            data-state="collapsed"
+            data-collapsible="icon"
+            data-variant={variant}
+            data-side={side}
+            data-slot="sidebar"
+          >
+            <div
+              data-slot="sidebar-container"
+              data-side={side}
+              className={cn(
+                "flex h-svh w-(--sidebar-width-icon) flex-col bg-sidebar data-[side=left]:border-r data-[side=right]:border-l",
+                className
+              )}
+              {...props}
+            >
+              <div
+                data-sidebar="sidebar"
+                data-slot="sidebar-inner"
+                className="flex size-full flex-col bg-sidebar"
+              >
+                {children}
+              </div>
+            </div>
+          </div>
+          <Sheet open={openMobile} onOpenChange={setOpenMobile} {...props}>
+            <SheetContent
+              dir={dir}
+              data-sidebar="sidebar"
+              data-slot="sidebar"
+              data-mobile="true"
+              className="w-(--sidebar-width) bg-sidebar p-0 text-sidebar-foreground [&>button]:hidden"
+              style={
+                {
+                  "--sidebar-width": SIDEBAR_WIDTH_MOBILE,
+                } as React.CSSProperties
+              }
+              side={side}
+            >
+              <SheetHeader className="sr-only">
+                <SheetTitle>Sidebar</SheetTitle>
+                <SheetDescription>
+                  Displays the mobile sidebar.
+                </SheetDescription>
+              </SheetHeader>
+              <div className="flex h-full w-full flex-col">{children}</div>
+            </SheetContent>
+          </Sheet>
+        </>
+      )
+    }
+
     return (
       <Sheet open={openMobile} onOpenChange={setOpenMobile} {...props}>
         <SheetContent
