@@ -1,14 +1,20 @@
-import { ClerkProvider, SignInButton, SignUpButton, Show, UserButton } from "@clerk/nextjs";
-import { shadcn } from "@clerk/ui/themes";
+import {
+  ClerkProvider,
+  SignInButton,
+  SignUpButton,
+  Show,
+  UserButton,
+} from "@clerk/nextjs"
+import { shadcn } from "@clerk/ui/themes"
 import { Geist, Geist_Mono } from "next/font/google"
 
 import "./globals.css"
 import { ThemeProvider } from "@/components/theme-provider"
-import { cn } from "@/lib/utils";
-import { Button } from "@/components/ui/button";
-import { Metadata } from "next";
+import { cn } from "@/lib/utils"
+import { Button } from "@/components/ui/button"
+import { Metadata } from "next"
 
-const geist = Geist({subsets:['latin'],variable:'--font-sans'})
+const geist = Geist({ subsets: ["latin"], variable: "--font-sans" })
 
 const fontMono = Geist_Mono({
   subsets: ["latin"],
@@ -33,18 +39,28 @@ export default function RootLayout({
     <html
       lang="en"
       suppressHydrationWarning
-      className={cn("antialiased", fontMono.variable, "font-sans", geist.variable)}
+      className={cn(
+        "antialiased",
+        fontMono.variable,
+        "font-sans",
+        geist.variable
+      )}
     >
       <body>
-        <ClerkProvider appearance={{ theme: shadcn }}>
+        <ClerkProvider
+          appearance={{ theme: shadcn }}
+          taskUrls={{ "choose-organization": "/choose-organisation" }}
+        >
           <ThemeProvider>
-            <div className="min-h-svh flex flex-col">
-              <header className="flex items-center justify-between px-6 py-4 border-b border-border">
-                <div className="font-semibold text-lg">Blend On</div>
+            <div className="flex min-h-svh flex-col">
+              <header className="flex items-center justify-between border-b border-border px-6 py-4">
+                <div className="text-lg font-semibold">Blend On</div>
                 <div className="flex items-center gap-4">
                   <Show when="signed-out">
                     <SignInButton mode="modal">
-                      <Button variant="outline" size="sm">Sign In</Button>
+                      <Button variant="outline" size="sm">
+                        Sign In
+                      </Button>
                     </SignInButton>
                     <SignUpButton mode="modal">
                       <Button size="sm">Sign Up</Button>
@@ -55,9 +71,7 @@ export default function RootLayout({
                   </Show>
                 </div>
               </header>
-              <main className="flex-1">
-                {children}
-              </main>
+              <main className="flex-1">{children}</main>
             </div>
           </ThemeProvider>
         </ClerkProvider>
