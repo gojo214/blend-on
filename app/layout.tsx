@@ -1,12 +1,8 @@
 import {
-  ClerkProvider,
-  SignInButton,
-  SignUpButton,
-  Show,
-  UserButton,
+  ClerkProvider
 } from "@clerk/nextjs"
 import { shadcn } from "@clerk/ui/themes"
-import { Geist, Geist_Mono } from "next/font/google"
+import { Fraunces, Geist, Geist_Mono } from "next/font/google"
 
 import "./globals.css"
 import { ThemeProvider } from "@/components/theme-provider"
@@ -19,6 +15,11 @@ const geist = Geist({ subsets: ["latin"], variable: "--font-sans" })
 const fontMono = Geist_Mono({
   subsets: ["latin"],
   variable: "--font-mono",
+})
+
+const fontLogo = Fraunces({
+  subsets: ["latin"],
+  variable: "--font-logo",
 })
 
 export const metadata: Metadata = {
@@ -40,10 +41,11 @@ export default function RootLayout({
       lang="en"
       suppressHydrationWarning
       className={cn(
-        "antialiased",
+         "antialiased",
         fontMono.variable,
         "font-sans",
-        geist.variable
+        geist.variable,
+        fontLogo.variable
       )}
     >
       <body>
@@ -52,27 +54,7 @@ export default function RootLayout({
           taskUrls={{ "choose-organization": "/choose-organisation" }}
         >
           <ThemeProvider>
-            <div className="flex min-h-svh flex-col">
-              <header className="flex items-center justify-between border-b border-border px-6 py-4">
-                <div className="text-lg font-semibold">Blend On</div>
-                <div className="flex items-center gap-4">
-                  <Show when="signed-out">
-                    <SignInButton mode="modal">
-                      <Button variant="outline" size="sm">
-                        Sign In
-                      </Button>
-                    </SignInButton>
-                    <SignUpButton mode="modal">
-                      <Button size="sm">Sign Up</Button>
-                    </SignUpButton>
-                  </Show>
-                  <Show when="signed-in">
-                    <UserButton />
-                  </Show>
-                </div>
-              </header>
-              <main className="flex-1">{children}</main>
-            </div>
+             {children}
           </ThemeProvider>
         </ClerkProvider>
       </body>

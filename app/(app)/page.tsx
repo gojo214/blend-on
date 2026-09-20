@@ -18,7 +18,7 @@ export default async function Page() {
       <Empty className="flex-none">
         <EmptyHeader>
           <EmptyMedia>
-            <Image src="/logo.ng" alt="Logo" width={48} height={48} />
+            <Image src="/logo.png" alt="Logo" width={48} height={48} />
           </EmptyMedia>
           <EmptyTitle className="text-2xl">
             What should we build today?
