@@ -1,3 +1,5 @@
+"use client"
+
 import {
   ArrowUpIcon,
   BrushIcon,
@@ -24,6 +26,7 @@ import {
   InputGroupButton,
   InputGroupTextarea,
 } from "@/components/ui/input-group"
+import { createGame } from "@/lib/games/actions"
 
 
 const models = ["Kimi K3", "Claude Opus 5", "GPT-5", "Gemini 3 Pro"]
@@ -41,7 +44,7 @@ const suggestions = [
 export function ChatComposer() {
   return (
     <div className="flex w-full flex-col gap-6">
-      <form action={() => {}}>
+      <form action={createGame}>
         <InputGroup className="bg-popover">
           <InputGroupTextarea
             name="prompt"
