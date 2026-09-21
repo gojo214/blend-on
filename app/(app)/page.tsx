@@ -9,6 +9,7 @@ import {
   EmptyMedia,
   EmptyTitle,
 } from "@/components/ui/empty"
+import { ChatComposer } from "@/features/chat/chat-composer"
 
 export default async function Page() {
   await auth.protect({ unauthenticatedUrl: "/sign-in" })
@@ -29,7 +30,7 @@ export default async function Page() {
           </EmptyDescription>
         </EmptyHeader>
         <EmptyContent className="max-w-2xl gap-6">
-       
+       <ChatComposer/>
         </EmptyContent>
       </Empty>
     </div>

@@ -3,3 +3,8 @@
 
 This version has breaking changes — APIs, conventions, and file structure may all differ from your training data. Read the relevant guide in `node_modules/next/dist/docs/` before writing any code. Heed deprecation notices.
 <!-- END:nextjs-agent-rules -->
+
+# Database Rules (Drizzle ORM & Neon)
+- **Forbid Migration Scripts**: Never use migration scripts (`drizzle-kit generate`, `drizzle-kit migrate`) in this project.
+- **Prefer `db:push`**: Always prefer `npm run db:push` / `drizzle-kit push` for schema updates because this project is in active development and there is no need for backwards compatibility.
+
