@@ -13,7 +13,9 @@
     "db:generate": "drizzle-kit generate",
     "db:migrate": "drizzle-kit migrate",
     "db:push": "drizzle-kit push",
-    "db:studio": "drizzle-kit studio"
+    "db:studio": "drizzle-kit studio",
+    "trigger:dev": "trigger dev",
+    "trigger:deploy": "trigger deploy"
   },
   "dependencies": {
     "@ai-sdk/google": "^4.0.77",
@@ -26,7 +28,7 @@
     "@neondatabase/serverless": "^1.1.0",
     "@openrouter/ai-sdk-provider": "^3.1.0",
     "@shadcn/react": "^0.3.1",
-    "@trigger.dev/sdk": "^4.6.4",
+    "@trigger.dev/sdk": "4.6.4",
     "ai": "^7.0.111",
     "class-variance-authority": "^0.7.1",
     "cmdk": "^1.1.1",
@@ -50,7 +52,7 @@
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
-    "@trigger.dev/build": "^4.6.4",
+    "@trigger.dev/build": "4.6.4",
     "@types/node": "^20",
     "@types/pg": "^8.23.1",
     "@types/react": "^19",
@@ -62,6 +64,7 @@
     "prettier": "^3.9.6",
     "prettier-plugin-tailwindcss": "^0.8.1",
     "tailwindcss": "^4",
+    "trigger.dev": "^4.6.4",
     "typescript": "^5"
   }
 }
