@@ -6,13 +6,13 @@ import { refresh } from "next/cache"
 
 const TITLE_MAX_LENGTH = 80
 
-export const createGame = async (formData: FormData) => {
+export const createGame = async (prompt: string) => {
   const { orgId } = await auth()
 
   if (!orgId) {
     throw new Error("An active organization is required to create a game.")
   }
-  const prompt = formData.get("prompt")
+  
   const title = typeof prompt === "string" ? prompt.trim() : ""
 
   if (!title) {

@@ -22,16 +22,8 @@ import {
 } from "@/components/ui/empty"
 import { ChatComposer } from "@/features/chat/chat-composer"
 import { suggestions } from "@/lib/game/suggestions"
+import { NewGameComposer } from "@/features/chat/new-chat-composer"
 
-const suggestionIcons: Record<string, LucideIcon> = {
-  PickaxeIcon,
-  BrushIcon,
-  ZapIcon,
-  PlaneIcon,
-  CrosshairIcon,
-  CarIcon,
-  Gamepad2Icon,
-}
 
 export default async function Page() {
   await auth.protect({ unauthenticatedUrl: "/sign-in" })
@@ -52,7 +44,7 @@ export default async function Page() {
           </EmptyDescription>
         </EmptyHeader>
         <EmptyContent className="max-w-2xl gap-6">
-          <ChatComposer />
+          <NewGameComposer/>
           <div className="flex flex-wrap justify-center gap-2">
             {suggestions.map((suggestion) => {
               

@@ -3,11 +3,7 @@
 import Image from "next/image"
 
 import { Bubble, BubbleContent } from "@/components/ui/bubble"
-import {
-  Message,
-  MessageAvatar,
-  MessageContent,
-} from "@/components/ui/message"
+import { Message, MessageAvatar, MessageContent } from "@/components/ui/message"
 import {
   MessageScroller,
   MessageScrollerButton,
@@ -18,6 +14,7 @@ import {
 } from "@/components/ui/message-scroller"
 
 import { ChatComposer } from "@/features/chat/chat-composer"
+import { useState } from "react"
 
 type ChatMessage = {
   id: string
@@ -47,7 +44,8 @@ const mockMessages: ChatMessage[] = [
   {
     id: "m4",
     role: "user",
-    content: "Co-op with friends, plus a creative mode where we can build freely.",
+    content:
+      "Co-op with friends, plus a creative mode where we can build freely.",
   },
   {
     id: "m5",
@@ -59,6 +57,12 @@ const mockMessages: ChatMessage[] = [
 
 export function ChatThread() {
   const lastMessage = mockMessages[mockMessages.length - 1]
+  const [prompt, setPrompt] = useState("")
+
+  const sendMessage = (message: string) => {
+    console.log(message)
+    setPrompt("")
+  }
 
   return (
     <MessageScrollerProvider autoScroll defaultScrollPosition="end">
@@ -104,7 +108,12 @@ export function ChatThread() {
           <MessageScrollerButton direction="end" />
         </MessageScroller>
         <div className="shrink-0">
-          <ChatComposer />
+          <ChatComposer
+            value={prompt}
+            onValueChange={setPrompt}
+            onSubmit={sendMessage}
+            placeholder="Describe the game you want to build?"
+          />
         </div>
       </div>
     </MessageScrollerProvider>
