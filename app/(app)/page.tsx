@@ -1,6 +1,17 @@
 import { auth } from "@clerk/nextjs/server"
 import Image from "next/image"
+import {
+  BrushIcon,
+  CarIcon,
+  CrosshairIcon,
+  Gamepad2Icon,
+  PickaxeIcon,
+  PlaneIcon,
+  ZapIcon,
+  type LucideIcon,
+} from "lucide-react"
 
+import { Button } from "@/components/ui/button"
 import {
   Empty,
   EmptyContent,
@@ -10,6 +21,9 @@ import {
   EmptyTitle,
 } from "@/components/ui/empty"
 import { ChatComposer } from "@/features/chat/chat-composer"
+import { suggestions } from "@/lib/game/suggestions"
+import { NewGameComposer } from "@/features/chat/new-chat-composer"
+
 
 export default async function Page() {
   await auth.protect({ unauthenticatedUrl: "/sign-in" })
@@ -30,7 +44,23 @@ export default async function Page() {
           </EmptyDescription>
         </EmptyHeader>
         <EmptyContent className="max-w-2xl gap-6">
-       <ChatComposer/>
+          <NewGameComposer/>
+          <div className="flex flex-wrap justify-center gap-2">
+            {suggestions.map((suggestion) => {
+              
+              return (
+                <Button
+                  key={suggestion.label}
+                  variant="outline"
+                  size="sm"
+                  className="rounded-full font-normal text-muted-foreground"
+                >
+                 <suggestion.icon/>
+                  {suggestion.label}
+                </Button>
+              )
+            })}
+          </div>
         </EmptyContent>
       </Empty>
     </div>

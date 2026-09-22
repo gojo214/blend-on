@@ -16,13 +16,18 @@
     "db:studio": "drizzle-kit studio"
   },
   "dependencies": {
+    "@ai-sdk/google": "^4.0.77",
+    "@ai-sdk/react": "^4.0.114",
     "@base-ui/react": "^1.8.0",
     "@clerk/nextjs": "^7.9.4",
     "@clerk/ui": "^1.33.1",
     "@neon/config": "^1.7.2",
     "@neon/env": "^1.4.3",
     "@neondatabase/serverless": "^1.1.0",
+    "@openrouter/ai-sdk-provider": "^3.1.0",
     "@shadcn/react": "^0.3.1",
+    "@trigger.dev/sdk": "^4.6.4",
+    "ai": "^7.0.111",
     "class-variance-authority": "^0.7.1",
     "cmdk": "^1.1.1",
     "cn": "^0.3.0",
@@ -45,6 +50,7 @@
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
+    "@trigger.dev/build": "^4.6.4",
     "@types/node": "^20",
     "@types/pg": "^8.23.1",
     "@types/react": "^19",

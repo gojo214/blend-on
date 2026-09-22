@@ -1,5 +1,13 @@
 import { sql } from "drizzle-orm"
-import { index, pgTable, text, timestamp, uuid } from "drizzle-orm/pg-core"
+import {
+  index,
+  jsonb,
+  pgTable,
+  text,
+  timestamp,
+  uuid,
+} from "drizzle-orm/pg-core"
+import type { UIMessage } from "ai"
 
 export const games = pgTable(
   "games",
@@ -8,6 +16,11 @@ export const games = pgTable(
     // Clerk organization id (`auth().orgId`), not a foreign key.
     orgId: text("org_id").notNull(),
     title: text("title").notNull(),
+    // One game = one chat: the full UI message thread, saved each turn.
+    messages: jsonb("messages")
+      .$type<UIMessage[]>()
+      .notNull()
+      .default(sql`'[]'::jsonb`),
     createdAt: timestamp("created_at", { withTimezone: true })
       .notNull()
       .default(sql`now()`),

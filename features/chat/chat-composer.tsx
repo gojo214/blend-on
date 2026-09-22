@@ -1,17 +1,7 @@
 "use client"
 
-import {
-  ArrowUpIcon,
-  BrushIcon,
-  CarIcon,
-  ChevronDownIcon,
-  CrosshairIcon,
-  Gamepad2Icon,
-  GripIcon,
-  PickaxeIcon,
-  PlaneIcon,
-  ZapIcon,
-} from "lucide-react"
+import { type FormEvent } from "react"
+import { ArrowUpIcon, ChevronDownIcon, GripIcon } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import {
@@ -26,30 +16,47 @@ import {
   InputGroupButton,
   InputGroupTextarea,
 } from "@/components/ui/input-group"
-import { createGame } from "@/lib/games/actions"
-
 
 const models = ["Kimi K3", "Claude Opus 5", "GPT-5", "Gemini 3 Pro"]
 
-const suggestions = [
-  { label: "Voxel survival", icon: PickaxeIcon },
-  { label: "Ink samurai duel", icon: BrushIcon },
-  { label: "Comic-book firefight", icon: ZapIcon },
-  { label: "Realistic battlefield", icon: PlaneIcon },
-  { label: "Fight-first shooter", icon: CrosshairIcon },
-  { label: "Jungle expedition drive", icon: CarIcon },
-  { label: "Sunny kingdom platformer", icon: Gamepad2Icon },
-]
+type ChatComposerProps = {
+  value: string
+  onValueChange: (value: string) => void
+  /** Receives the trimmed prompt; only called when it is non-empty. */
+  onSubmit: (value: string) => void
+  disabled?: boolean
+  placeholder?: string
+}
 
-export function ChatComposer() {
+export function ChatComposer({
+  value,
+  onValueChange,
+  onSubmit,
+  disabled = false,
+  placeholder = "Describe the game you want to build…",
+}: ChatComposerProps) {
+  const prompt = value.trim()
+  const canSubmit = prompt.length > 0 && !disabled
+  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault()
+
+    if (!canSubmit) {
+      return
+    }
+
+    onSubmit(prompt)
+  }
+
   return (
     <div className="flex w-full flex-col gap-6">
-      <form action={createGame}>
+      <form onSubmit={handleSubmit}>
         <InputGroup className="bg-popover">
           <InputGroupTextarea
             name="prompt"
+            value={value}
+            onChange={(event) => onValueChange(event.currentTarget.value)}
             required
-            placeholder="Describe the game you want to build…"
+            placeholder={placeholder}
             rows={1}
             className="field-sizing-content max-h-48 min-h-10"
           />
@@ -81,19 +88,6 @@ export function ChatComposer() {
           </InputGroupAddon>
         </InputGroup>
       </form>
-      <div className="flex flex-wrap justify-center gap-2">
-        {suggestions.map((suggestion) => (
-          <Button
-            key={suggestion.label}
-            variant="outline"
-            size="sm"
-            className="rounded-full font-normal text-muted-foreground"
-          >
-            <suggestion.icon />
-            {suggestion.label}
-          </Button>
-        ))}
-      </div>
     </div>
   )
 }
