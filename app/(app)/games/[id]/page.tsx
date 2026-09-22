@@ -1,3 +1,4 @@
+import { ChatThread } from '@/features/chat/chat-thread'
 import { auth } from '@clerk/nextjs/server'
 
 type GamePageProps = {
@@ -9,5 +10,5 @@ export default async function GamePage({ params }: GamePageProps) {
 
   const { id } = await params
 
-  return <p>{id}</p>
+  return (<ChatThread/>)
 }
