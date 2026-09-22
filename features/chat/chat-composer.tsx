@@ -1,17 +1,6 @@
 "use client"
 
-import {
-  ArrowUpIcon,
-  BrushIcon,
-  CarIcon,
-  ChevronDownIcon,
-  CrosshairIcon,
-  Gamepad2Icon,
-  GripIcon,
-  PickaxeIcon,
-  PlaneIcon,
-  ZapIcon,
-} from "lucide-react"
+import { ArrowUpIcon, ChevronDownIcon, GripIcon } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import {
@@ -28,18 +17,7 @@ import {
 } from "@/components/ui/input-group"
 import { createGame } from "@/lib/games/actions"
 
-
 const models = ["Kimi K3", "Claude Opus 5", "GPT-5", "Gemini 3 Pro"]
-
-const suggestions = [
-  { label: "Voxel survival", icon: PickaxeIcon },
-  { label: "Ink samurai duel", icon: BrushIcon },
-  { label: "Comic-book firefight", icon: ZapIcon },
-  { label: "Realistic battlefield", icon: PlaneIcon },
-  { label: "Fight-first shooter", icon: CrosshairIcon },
-  { label: "Jungle expedition drive", icon: CarIcon },
-  { label: "Sunny kingdom platformer", icon: Gamepad2Icon },
-]
 
 export function ChatComposer() {
   return (
@@ -81,19 +59,6 @@ export function ChatComposer() {
           </InputGroupAddon>
         </InputGroup>
       </form>
-      <div className="flex flex-wrap justify-center gap-2">
-        {suggestions.map((suggestion) => (
-          <Button
-            key={suggestion.label}
-            variant="outline"
-            size="sm"
-            className="rounded-full font-normal text-muted-foreground"
-          >
-            <suggestion.icon />
-            {suggestion.label}
-          </Button>
-        ))}
-      </div>
     </div>
   )
 }
