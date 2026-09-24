@@ -19,11 +19,24 @@ export default async function GamePage({ params }: GamePageProps) {
     notFound()
   }
 
+  // Hydrate the transport: a persisted session PAT + resume cursor let a
+  // fresh tab reconnect to the game's session without a start round-trip.
+  const sessions =
+    game.chatAccessToken != null
+      ? {
+          [game.id]: {
+            publicAccessToken: game.chatAccessToken,
+            lastEventId: game.lastEventId ?? undefined,
+          },
+        }
+      : undefined
+
   return (
     <ChatThread
       key={game.id}
       gameId={game.id}
       initialMessages={game.messages}
+      initialSessions={sessions}
     />
   )
 }

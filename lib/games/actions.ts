@@ -1,11 +1,16 @@
 "use server"
 
 import { createOpenRouter } from "@openrouter/ai-sdk-provider"
-import { auth } from "@clerk/nextjs/server"
+import { auth as clerkAuth } from "@clerk/nextjs/server"
+import { auth as triggerAuth } from "@trigger.dev/sdk"
+import { chat, type ChatStartSessionParams } from "@trigger.dev/sdk/ai"
 import { generateText } from "ai"
 import { refresh } from "next/cache"
-
+import { google } from '@ai-sdk/google'
 import { db, games } from "@/db"
+import { getGame } from "@/lib/games/queries"
+
+import type { gameChat } from "@/trigger/chat"
 
 const TITLE_MAX_LENGTH = 80
 
@@ -25,7 +30,7 @@ const truncate = (value: string) =>
 const generateTitle = async (description: string): Promise<string> => {
   try {
     const { text } = await generateText({
-      model: openrouter.chat(TITLE_MODEL),
+      model: google("gemini-3.5-flash"),
       instructions:
         "You create short titles for player-made games. Respond with only the title — no quotes, no explanation, no trailing punctuation.",
       prompt: `Create a short title (at most ${TITLE_MAX_LENGTH} characters) for this game: ${description}`,
@@ -53,7 +58,7 @@ const generateTitle = async (description: string): Promise<string> => {
 }
 
 export const createGame = async (prompt: string) => {
-  const { orgId } = await auth()
+  const { orgId } = await clerkAuth()
 
   if (!orgId) {
     throw new Error("An active organization is required to create a game.")
@@ -70,4 +75,59 @@ export const createGame = async (prompt: string) => {
   await db.insert(games).values({ orgId, title }).returning()
 
   refresh()
+}
+
+const startChatSessionAction = chat.createStartSessionAction<typeof gameChat>(
+  "game-chat"
+)
+
+/**
+ * Creates (or resumes) the chat session for a game and returns the
+ * session-scoped PAT the browser uses. Idempotent on (environment, chatId).
+ *
+ * Carries the route handler's auth check: signed-in, in an org, and the
+ * game must belong to that org.
+ */
+export const startChatSession = async (
+  params: ChatStartSessionParams<typeof gameChat>
+) => {
+  const { userId, orgId } = await clerkAuth()
+
+  if (!userId || !orgId) {
+    throw new Error("Unauthorized")
+  }
+
+  const game = await getGame(params.chatId)
+
+  if (!game) {
+    throw new Error("Game not found")
+  }
+
+  return startChatSessionAction(params)
+}
+
+/**
+ * Mints a fresh session-scoped PAT for an existing game (the transport calls
+ * this on a 401/403 to refresh). Same auth check as `startChatSession`.
+ */
+export const mintChatAccessToken = async (chatId: string) => {
+  const { userId, orgId } = await clerkAuth()
+
+  if (!userId || !orgId) {
+    throw new Error("Unauthorized")
+  }
+
+  const game = await getGame(chatId)
+
+  if (!game) {
+    throw new Error("Game not found")
+  }
+
+  return triggerAuth.createPublicToken({
+    scopes: {
+      read: { sessions: chatId },
+      write: { sessions: chatId },
+    },
+    expirationTime: "1h",
+  })
 }

@@ -21,6 +21,11 @@ export const games = pgTable(
       .$type<UIMessage[]>()
       .notNull()
       .default(sql`'[]'::jsonb`),
+    // Chat transport session state, written atomically with `messages`:
+    // the session-scoped PAT the browser reconnects with, and the stream
+    // resume cursor (the transport rewinds the session stream to this).
+    chatAccessToken: text("chat_access_token"),
+    lastEventId: text("last_event_id"),
     createdAt: timestamp("created_at", { withTimezone: true })
       .notNull()
       .default(sql`now()`),

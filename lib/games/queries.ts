@@ -4,11 +4,7 @@ import { auth } from "@clerk/nextjs/server"
 
 import { and, desc, eq } from "drizzle-orm"
 
-import { createIdGenerator, type UIMessage } from "ai"
-
-import { db, games, type Game } from "@/db"
-
-export const generateMessageId = createIdGenerator({ prefix: "msg", size: 16 })
+import { db, games } from "@/db"
 
 export const listGame = async () => {
   const { orgId } = await auth()
@@ -39,17 +35,4 @@ export const getGame = async (id: string) => {
     .limit(1)
 
   return game ?? null
-}
-
-export const updateGameMessages = async (id: string, messages: UIMessage[]) => {
-  const { orgId } = await auth()
-
-  if (!orgId) {
-    return
-  }
-
-  await db
-    .update(games)
-    .set({ messages })
-    .where(and(eq(games.id, id), eq(games.orgId, orgId)))
 }

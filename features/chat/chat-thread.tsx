@@ -3,7 +3,12 @@
 import Image from "next/image"
 import { useState } from "react"
 import { useChat } from "@ai-sdk/react"
-import { DefaultChatTransport, type UIMessage } from "ai"
+import { useTriggerChatTransport } from "@trigger.dev/sdk/chat/react"
+import type { ChatSessionPersistedState } from "@trigger.dev/sdk/chat"
+import type { UIMessage } from "ai"
+
+import type { gameChat } from "@/trigger/chat"
+import { mintChatAccessToken, startChatSession } from "@/lib/games/actions"
 
 import { Bubble, BubbleContent } from "@/components/ui/bubble"
 import { Message, MessageAvatar, MessageContent } from "@/components/ui/message"
@@ -33,16 +38,28 @@ type ChatThreadProps = {
   gameId: string
   /** Persisted thread for this game (one game = one chat). Falls back to a greeting when empty. */
   initialMessages?: UIMessage[]
+  /** Persisted chat transport state (session PAT + resume cursor), so a reload reconnects without a round-trip. */
+  initialSessions?: Record<string, ChatSessionPersistedState>
 }
 
-export function ChatThread({ gameId, initialMessages = [] }: ChatThreadProps) {
+export function ChatThread({
+  gameId,
+  initialMessages = [],
+  initialSessions,
+}: ChatThreadProps) {
   const [prompt, setPrompt] = useState("")
+  const transport = useTriggerChatTransport<typeof gameChat>({
+    task: "game-chat",
+    accessToken: ({ chatId }) => mintChatAccessToken(chatId),
+    startSession: ({ chatId, clientData }) =>
+      startChatSession({ chatId, clientData }),
+    sessions: initialSessions,
+  })
   const { messages, sendMessage, status } = useChat({
-    transport: new DefaultChatTransport({
-      api: "/api/chat",
-      body: { gameId },
-    }),
+    id: gameId,
+    transport,
     messages: initialMessages.length > 0 ? initialMessages : [greetingMessage],
+    resume: initialMessages.length > 0,
   })
 
   const lastMessage = messages[messages.length - 1]
