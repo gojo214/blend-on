@@ -1,7 +1,12 @@
 "use client"
 
 import { type FormEvent } from "react"
-import { ArrowUpIcon, ChevronDownIcon, GripIcon } from "lucide-react"
+import {
+  ArrowUpIcon,
+  ChevronDownIcon,
+  GripIcon,
+  SquareIcon,
+} from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import {
@@ -24,7 +29,11 @@ type ChatComposerProps = {
   onValueChange: (value: string) => void
   /** Receives the trimmed prompt; only called when it is non-empty. */
   onSubmit: (value: string) => void
+  /** Cancels the in-flight generation; only invoked while `isStreaming` is true. */
+  onStop?: () => void
   disabled?: boolean
+  /** When true, the send button becomes a stop button that calls `onStop`. */
+  isStreaming?: boolean
   placeholder?: string
 }
 
@@ -32,11 +41,13 @@ export function ChatComposer({
   value,
   onValueChange,
   onSubmit,
+  onStop,
   disabled = false,
+  isStreaming = false,
   placeholder = "Describe the game you want to build…",
 }: ChatComposerProps) {
   const prompt = value.trim()
-  const canSubmit = prompt.length > 0 && !disabled
+  const canSubmit = prompt.length > 0 && !disabled && !isStreaming
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()
 
@@ -45,6 +56,14 @@ export function ChatComposer({
     }
 
     onSubmit(prompt)
+  }
+
+  const handleStop = () => {
+    if (!onStop) {
+      return
+    }
+
+    onStop()
   }
 
   return (
@@ -78,13 +97,26 @@ export function ChatComposer({
               </DropdownMenuContent>
             </DropdownMenu>
             {/* Base UI buttons default to `type="button"`. */}
-            <Button
-              type="submit"
-              size="icon-lg"
-              className="ml-auto rounded-full"
-            >
-              <ArrowUpIcon />
-            </Button>
+            {isStreaming && onStop ? (
+              <Button
+                type="button"
+                size="icon-lg"
+                className="ml-auto rounded-full"
+                onClick={handleStop}
+                aria-label="Stop generating"
+              >
+                <SquareIcon />
+              </Button>
+            ) : (
+              <Button
+                type="submit"
+                size="icon-lg"
+                className="ml-auto rounded-full"
+                aria-label="Send message"
+              >
+                <ArrowUpIcon />
+              </Button>
+            )}
           </InputGroupAddon>
         </InputGroup>
       </form>

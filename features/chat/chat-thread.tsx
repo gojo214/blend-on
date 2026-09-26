@@ -55,7 +55,7 @@ export function ChatThread({
       startChatSession({ chatId, clientData }),
     sessions: initialSessions,
   })
-  const { messages, sendMessage, status } = useChat({
+  const { messages, sendMessage, stop: aiStop, status } = useChat({
     id: gameId,
     transport,
     messages: initialMessages.length > 0 ? initialMessages : [greetingMessage],
@@ -70,9 +70,18 @@ export function ChatThread({
     setPrompt("")
   }
 
+  const handleStop = () => {
+    // Cancel the task server-side. `stopGeneration` posts a stop signal that
+    // aborts the run's `streamText` (our `abortSignal`), and keeps the run
+    // alive for the next message. `useChat`'s `stop()` alone doesn't reach
+    // the backend after a stream resume, so fire both.
+    transport.stopGeneration(gameId)
+    aiStop()
+  }
+
   return (
-    <MessageScrollerProvider autoScroll defaultScrollPosition="end">
-      <div className="flex size-full min-h-0 flex-col gap-4">
+    <MessageScrollerProvider  autoScroll >
+      <div className="flex size-full max-h-svh flex-col gap-4 py-4 ">
         <MessageScroller className="flex-1">
           <MessageScrollerViewport>
             <MessageScrollerContent className="p-4 text-2xl">
@@ -122,7 +131,8 @@ export function ChatThread({
             value={prompt}
             onValueChange={setPrompt}
             onSubmit={handleSendMessage}
-            disabled={isStreaming}
+            onStop={handleStop}
+            isStreaming={isStreaming}
             placeholder="Describe the game you want to build…"
           />
         </div>
